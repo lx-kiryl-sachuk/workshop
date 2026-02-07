@@ -1,8 +1,8 @@
-import { Inject, Injectable, Logger, OnModuleInit } from "@nestjs/common";
-import Web3 from "web3";
-import ABI from "../abi/WorkshopToken.abi.json";
-import { WEB3_HTTP, WEB3_WS } from "../web3/web3.constants";
-import { HistoryStore } from "./history.store";
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import Web3 from 'web3';
+import ABI from '../abi/WorkshopToken.abi.json';
+import { WEB3_HTTP, WEB3_WS } from '../web3/web3.constants';
+import { HistoryStore } from './history.store';
 
 @Injectable()
 export class TokenService implements OnModuleInit {
@@ -18,7 +18,7 @@ export class TokenService implements OnModuleInit {
 
   onModuleInit() {
     const tokenAddress = process.env.TOKEN_ADDRESS;
-    if (!tokenAddress) throw new Error("TOKEN_ADDRESS is required");
+    if (!tokenAddress) throw new Error('TOKEN_ADDRESS is required');
 
     this.contractHttp = new this.web3Http.eth.Contract(
       ABI as any,
@@ -29,7 +29,7 @@ export class TokenService implements OnModuleInit {
     // Subscribe to Transfer events via WebSocket (web3.js v4 API)
     const subscription = this.contractWs.events.Transfer();
 
-    subscription.on("data", (ev: any) => {
+    subscription.on('data', (ev: any) => {
       const { from, to, value } = ev.returnValues;
       this.logger.log(`Transfer: ${from} -> ${to} (${value})`);
       this.history.push({
@@ -41,11 +41,11 @@ export class TokenService implements OnModuleInit {
       });
     });
 
-    subscription.on("error", (err: any) =>
-      this.logger.error("Transfer subscription error", err),
+    subscription.on('error', (err: any) =>
+      this.logger.error('Transfer subscription error', err),
     );
 
-    this.logger.log("Subscribed to Transfer events via WebSocket");
+    this.logger.log('Subscribed to Transfer events via WebSocket');
   }
 
   async balanceOf(address: string) {
@@ -59,7 +59,10 @@ export class TokenService implements OnModuleInit {
 
     const tx = this.contractHttp.methods.transfer(to, amount);
     const gas = await tx.estimateGas({ from: account.address });
-    const receipt = await tx.send({ from: account.address, gas: gas.toString() });
+    const receipt = await tx.send({
+      from: account.address,
+      gas: gas.toString(),
+    });
 
     return {
       from: account.address,
