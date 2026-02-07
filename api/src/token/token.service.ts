@@ -1,8 +1,8 @@
-import { Inject, Injectable, Logger, OnModuleInit } from "@nestjs/common";
-import Web3 from "web3";
-import ABI from "../abi/WorkshopToken.abi.json";
-import { WEB3_HTTP, WEB3_WS } from "../web3/web3.constants";
-import { HistoryStore } from "./history.store";
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import Web3 from 'web3';
+import ABI from '../abi/WorkshopToken.abi.json';
+import { WEB3_HTTP, WEB3_WS } from '../web3/web3.constants';
+import { HistoryStore } from './history.store';
 
 @Injectable()
 export class TokenService implements OnModuleInit {
@@ -18,7 +18,7 @@ export class TokenService implements OnModuleInit {
 
   onModuleInit() {
     const tokenAddress = process.env.TOKEN_ADDRESS;
-    if (!tokenAddress) throw new Error("TOKEN_ADDRESS is required");
+    if (!tokenAddress) throw new Error('TOKEN_ADDRESS is required');
 
     // TODO: Initialize this.contractHttp using:
     //   new this.web3Http.eth.Contract(ABI as any, tokenAddress)
@@ -44,7 +44,7 @@ export class TokenService implements OnModuleInit {
   async balanceOf(address: string) {
     // TODO: Call this.contractHttp.methods.balanceOf(address).call()
     // TODO: Return { address, balance: <result as string> }
-    return { address, balance: "0" };
+    return { address, balance: '0' };
   }
 
   async transfer(fromPk: string, to: string, amount: string) {
@@ -60,7 +60,7 @@ export class TokenService implements OnModuleInit {
     //   const receipt = await tx.send({ from: account.address, gas: gas.toString() });
 
     // TODO: Return { from: account.address, to, amount, txHash: receipt.transactionHash }
-    return { from: "", to, amount, txHash: "" };
+    return { from: '', to, amount, txHash: '' };
   }
 
   historyList(address?: string) {
