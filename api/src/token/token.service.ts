@@ -20,50 +20,37 @@ export class TokenService implements OnModuleInit {
     const tokenAddress = process.env.TOKEN_ADDRESS;
     if (!tokenAddress) throw new Error("TOKEN_ADDRESS is required");
 
-    this.contractHttp = new this.web3Http.eth.Contract(
-      ABI as any,
-      tokenAddress,
-    );
-    this.contractWs = new this.web3Ws.eth.Contract(ABI as any, tokenAddress);
+    // TODO: Initialize this.contractHttp using:
+    //   new this.web3Http.eth.Contract(ABI as any, tokenAddress)
 
-    // Subscribe to Transfer events (WS)
-    this.contractWs.events
-      .Transfer({ fromBlock: "latest" })
-      .on("data", (ev: any) => {
-        const { from, to, value } = ev.returnValues;
-        this.logger.log(`Transfer: ${from} -> ${to} (${value})`);
-        this.history.push({
-          txHash: ev.transactionHash,
-          from,
-          to,
-          value: value.toString(),
-          blockNumber: Number(ev.blockNumber),
-        });
-      })
-      .on("error", (err: any) =>
-        this.logger.error("Transfer subscription error", err),
-      );
+    // TODO: Initialize this.contractWs the same way but with this.web3Ws
+
+    // TODO: Subscribe to Transfer events via WebSocket:
+    //   this.contractWs.events.Transfer({ fromBlock: "latest" })
+    //     .on("data", (ev) => { ... push to this.history ... })
+    //     .on("error", (err) => { ... log error ... })
   }
 
   async balanceOf(address: string) {
-    const bal: any = await this.contractHttp.methods.balanceOf(address).call();
-    return { address, balance: bal.toString() };
+    // TODO: Call this.contractHttp.methods.balanceOf(address).call()
+    // TODO: Return { address, balance: <result as string> }
+    return { address, balance: "0" };
   }
 
   async transfer(fromPk: string, to: string, amount: string) {
-    const account = this.web3Http.eth.accounts.privateKeyToAccount(fromPk);
-    this.web3Http.eth.accounts.wallet.add(account);
+    // TODO: Derive account from private key:
+    //   const account = this.web3Http.eth.accounts.privateKeyToAccount(fromPk);
+    //   this.web3Http.eth.accounts.wallet.add(account);
 
-    const tx = this.contractHttp.methods.transfer(to, amount);
-    const gas = await tx.estimateGas({ from: account.address });
-    const receipt = await tx.send({ from: account.address, gas: gas.toString() });
+    // TODO: Build the transfer transaction:
+    //   const tx = this.contractHttp.methods.transfer(to, amount);
 
-    return {
-      from: account.address,
-      to,
-      amount,
-      txHash: receipt.transactionHash,
-    };
+    // TODO: Estimate gas and send the transaction:
+    //   const gas = await tx.estimateGas({ from: account.address });
+    //   const receipt = await tx.send({ from: account.address, gas: gas.toString() });
+
+    // TODO: Return { from: account.address, to, amount, txHash: receipt.transactionHash }
+    return { from: "", to, amount, txHash: "" };
   }
 
   historyList(address?: string) {

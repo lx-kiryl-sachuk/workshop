@@ -14,16 +14,13 @@ export class HistoryStore {
   private limit = Number(process.env.HISTORY_LIMIT ?? 200);
 
   push(ev: TransferEvent) {
-    this.items.unshift(ev);
-    if (this.items.length > this.limit)
-      this.items = this.items.slice(0, this.limit);
+    // TODO: Add the event to the beginning of `this.items`
+    // TODO: If items exceed `this.limit`, trim the array
   }
 
-  list(address?: string) {
-    if (!address) return this.items;
-    const a = address.toLowerCase();
-    return this.items.filter(
-      (x) => x.from.toLowerCase() === a || x.to.toLowerCase() === a,
-    );
+  list(address?: string): TransferEvent[] {
+    // TODO: If no address provided, return all items
+    // TODO: If address provided, filter items where `from` or `to` matches (case-insensitive)
+    return [];
   }
 }

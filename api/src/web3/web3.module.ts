@@ -1,23 +1,18 @@
 import { Module } from "@nestjs/common";
-import Web3 from "web3";
 import { WEB3_HTTP, WEB3_WS } from "./web3.constants";
+
+// TODO: import Web3
 
 @Module({
   providers: [
-    {
-      provide: WEB3_HTTP,
-      useFactory: () =>
-        new Web3(process.env.RPC_HTTP ?? "http://127.0.0.1:8545"),
-    },
-    {
-      provide: WEB3_WS,
-      useFactory: () =>
-        new Web3(
-          new Web3.providers.WebsocketProvider(
-            process.env.RPC_WS ?? "ws://127.0.0.1:8545",
-          ),
-        ),
-    },
+    // TODO: Create a provider for WEB3_HTTP
+    //   - use `useFactory` to return a new Web3 instance
+    //   - connect to process.env.RPC_HTTP (default: "http://127.0.0.1:8545")
+
+    // TODO: Create a provider for WEB3_WS
+    //   - use `useFactory` to return a new Web3 instance
+    //   - use Web3.providers.WebsocketProvider
+    //   - connect to process.env.RPC_WS (default: "ws://127.0.0.1:8545")
   ],
   exports: [WEB3_HTTP, WEB3_WS],
 })
