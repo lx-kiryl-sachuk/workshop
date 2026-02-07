@@ -1,18 +1,16 @@
 import { Inject, Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import Web3 from "web3";
 import ABI from "../abi/WorkshopToken.abi.json";
-import { WEB3_HTTP, WEB3_WS } from "../web3/web3.constants";
+import { WEB3_HTTP } from "../web3/web3.constants";
 import { HistoryStore } from "./history.store";
 
 @Injectable()
 export class TokenService implements OnModuleInit {
   private readonly logger = new Logger(TokenService.name);
   private contractHttp: any;
-  private contractWs: any;
 
   constructor(
     @Inject(WEB3_HTTP) private readonly web3Http: Web3,
-    @Inject(WEB3_WS) private readonly web3Ws: Web3,
     private readonly history: HistoryStore,
   ) {}
 
