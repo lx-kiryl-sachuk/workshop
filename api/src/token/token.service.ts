@@ -16,7 +16,10 @@ export class TokenService implements OnModuleInit {
     private readonly history: HistoryStore,
   ) {}
 
-  onModuleInit() {
+  private lastBlock = 0;
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
+
+  async onModuleInit() {
     const tokenAddress = process.env.TOKEN_ADDRESS;
     if (!tokenAddress) throw new Error("TOKEN_ADDRESS is required");
 
@@ -24,12 +27,25 @@ export class TokenService implements OnModuleInit {
       ABI as any,
       tokenAddress,
     );
-    this.contractWs = new this.web3Ws.eth.Contract(ABI as any, tokenAddress);
 
-    // Subscribe to Transfer events (WS)
-    this.contractWs.events
-      .Transfer({ fromBlock: "latest" })
-      .on("data", (ev: any) => {
+    // Use polling to reliably capture Transfer events (works with any provider)
+    this.lastBlock = Number(await this.web3Http.eth.getBlockNumber());
+    this.logger.log(`Polling for Transfer events from block ${this.lastBlock}`);
+
+    this.pollInterval = setInterval(() => this.pollTransferEvents(), 2000);
+  }
+
+  private async pollTransferEvents() {
+    try {
+      const latest = Number(await this.web3Http.eth.getBlockNumber());
+      if (latest <= this.lastBlock) return;
+
+      const events = await this.contractHttp.getPastEvents("Transfer", {
+        fromBlock: this.lastBlock + 1,
+        toBlock: "latest",
+      });
+
+      for (const ev of events) {
         const { from, to, value } = ev.returnValues;
         this.logger.log(`Transfer: ${from} -> ${to} (${value})`);
         this.history.push({
@@ -39,10 +55,12 @@ export class TokenService implements OnModuleInit {
           value: value.toString(),
           blockNumber: Number(ev.blockNumber),
         });
-      })
-      .on("error", (err: any) =>
-        this.logger.error("Transfer subscription error", err),
-      );
+      }
+
+      this.lastBlock = latest;
+    } catch (err) {
+      this.logger.error("Transfer polling error", err);
+    }
   }
 
   async balanceOf(address: string) {
