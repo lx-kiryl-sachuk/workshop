@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import Web3 from 'web3';
 import ABI from '../abi/WorkshopToken.abi.json';
